@@ -14,11 +14,11 @@ export default class ApplicationMenu {
     }
 
     #createButtons(buttons){
-        const parentSetcion = document.getElementById(this.#parentId);
+        const parentSection = document.getElementById(this.#parentId);
         const buttonsForInner = buttons.map((name,index) => 
                 `<button id ="${this.#parentId}-menu-button-${index}" class = "buttons-menu">${name}</button>`).join('')
-        parentSetcion.innerHTML = buttonsForInner;
-        this.#buttons = parentSetcion.childNodes;
+        parentSection.innerHTML = buttonsForInner;
+        this.#buttons = parentSection.childNodes;
     }
 
     #setEvents(){

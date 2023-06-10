@@ -5,6 +5,30 @@ body{
     align-items: center;
 }
 
+.header{
+    width: 90vw;
+    display: flex;
+    flex-direction: column;
+}
+
+#login-place{
+    display: flex;
+    flex-direction: row;
+}
+
+.login-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 10px;
+}
+
+.login-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 #content-id{
     display: flex;
     flex-direction: column;
@@ -48,6 +72,7 @@ body{
 
 .input-registration{
     margin: 5px;
+    width: 40vw;
 }
 
 .button-login{
@@ -55,8 +80,7 @@ body{
 }
 
 .details-image{
-    width: 50vw;
-    
+    width: 45vw;  
 }
 
 .active {
@@ -127,6 +151,8 @@ body{
 .modal-window{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 .title_details{
@@ -156,13 +182,35 @@ body{
     overflow-y: auto;
     height: 15vh;
 }
+.information-details{
+    display: flex;
+    flex-direction: column;
+}
+
+.check-details-section{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.close-anchor{
+    text-align: right;
+}
 
 .overview-table{
     display: none;
 }
 
 
+
+
 @media(min-width: 650px){
+
+    .header{
+        display: flex;
+        flex-direction: row;
+    }
+
     .poster-image{
         width: 15vw;
     }
@@ -178,7 +226,8 @@ body{
     }
 
     #main-menu-section-id{
-        justify-content: space-around;
+        justify-content: left;
+        align-items: center;
         flex-direction: row;
     }
 
@@ -186,11 +235,6 @@ body{
         width: 13vw;
         height: 5vh;
     }
-
-    /* .details-image {
-        width: 30vw;
-        height: 45vh;
-    } */
 
     .modal-window{
         display: flex;
@@ -206,9 +250,25 @@ body{
         width: 40vw;
         height: 35vh;
     }
+    .input-section {
+        text-align: left;
+    }
+    .input-registration{
+        margin: 5px;
+        width: 25vw;
+    }
+
+    .information_details{
+        width: 45vw;    
+    }
+
+    .details-image {
+        width: 25vw;
+    }
 
     .button-login{
         width: 13vw;
+        margin: 15px;
     }
 
     .title_details{
@@ -223,17 +283,33 @@ body{
     .overview-details{
         padding-left: 12px;
         width: 40vw;
+        height: 45vh;
     }
 
     .overview-table{
         display: flex;
     }
-    
 
-   
+    .close-anchor{
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+    }
+      
 }
 
 @media(min-width: 1000px){
+
+    .input-registration {
+        margin: 5px;
+        width: 20vw;
+    }
+
+    .modal-window-login {
+        width: 30vw;
+        height: 35vh;
+    }
+
     .td-inforation {
         width: 15vw;
     }
