@@ -6,11 +6,11 @@ export default class MoviesService{
     #movies;
     #fieldsMovie;
     
-    constructor(){
+    constructor(apiKey){
         
-        this.#fieldsMovie = []
+        //this.#fieldsMovie = []
         this.#mainUrl = 'https://api.themoviedb.org/3/';
-        this.#apiKey = '2c46288716a18fb7aadcc2a801f3fc6b';
+        this.#apiKey = apiKey;
         this.#urlImage = 'https://image.tmdb.org//t/p/w600_and_h900_bestv2'
     }
 
@@ -46,15 +46,30 @@ export default class MoviesService{
         return this.#getResponse(url);
     }
 
+    async getRegions(){
+        const url = `${this.#mainUrl}/watch/providers/regions?language=en&api_key=${this.#apiKey}`
+        return this.#getResponse(url);
+    }
+
+    async getLanguages(){
+        const url = `${this.#mainUrl}/configuration/languages?&api_key=${this.#apiKey}`
+        return this.#getResponse(url);
+    }
+
     async getTopMovie(page){
-        const urlTopMovie = `${this.#mainUrl}/movie/top_rated?language=en-US&page=${page}&api_key=${this.#apiKey}`
+        const urlTopMovie = `${this.#mainUrl}movie/top_rated?language=en-US&page=${page}&api_key=${this.#apiKey}`
         const movieArray = await this.#getResponse(urlTopMovie);
-        this.#setMoviFields(movieArray.results[0])
+        if(movieArray.errors == undefined){
+            this.#setMoviFields(movieArray.results[0])
+        }
         return movieArray;
+        
     }
 
     #setMoviFields(movie){
-        this.#fieldsMovie = Object.keys(movie)
+        if(this.#fieldsMovie == undefined){
+            this.#fieldsMovie = Object.keys(movie)
+        }   
     }
 
     async setlistMovie(listMovie){
@@ -71,6 +86,57 @@ export default class MoviesService{
             
         })) 
         
+    }
+
+    async getListByDiscovery(discovery, page = 1){
+        let urlDiscovery = `${this.#mainUrl}discover/movie?`
+        urlDiscovery += discovery.languageToSearch != '' ? `&with_original_language=${this.#getStrIso639(discovery.languageToSearch)}` : '';
+        urlDiscovery += discovery.yearToSearch != '' ? `&primary_release_year=${discovery.yearToSearch}` : '';
+        urlDiscovery += discovery.genresToSearch.length > 0 ? `&with_genres=${this.#getStr(discovery.genresToSearch)}` : '';
+        urlDiscovery += discovery.regionToSearch.length > 0 ? `&with_origin_country=${this.#getStrIso3166(discovery.regionToSearch)}` : ''
+        urlDiscovery +=`&page=${page}&api_key=${this.#apiKey}`
+        return this.#getResponse(urlDiscovery)
+    }
+
+    async getListBySearch(stringSearch, page = 1){
+        const urlSearch = `${this.#mainUrl}search/movie?query=${stringSearch}&page=${page}&api_key=${this.#apiKey}`
+    return this.#getResponse(urlSearch)    
+    }
+
+    #getStr(array){
+        let string;
+        array.map(element => {
+            if(string == undefined){
+                string = `${element.id}`
+            } else {
+                string +=`AND${element.id}`
+            }
+        });
+        return string;
+    }
+
+    #getStrIso3166(array){
+        let string;
+        array.map(element => {
+            if(string == undefined){
+                string = `${element.iso_3166_1}`
+            } else {
+                string +=`AND${element.iso_3166_1}`
+            }
+        }); 
+        return string;
+    }
+
+    #getStrIso639(array){
+        let string;
+        array.map(element => {
+            if(string == undefined){
+                string = `${element.iso_639_1}`
+            } else {
+                string +=`AND${element.iso_639_1}`
+            }
+        }); 
+        return string;
     }
 
     getListOfMovies(){

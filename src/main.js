@@ -4,7 +4,9 @@ import ApplicationMenu from "./ui_ux/ApplicationMenu.js";
 import ModalDetails from "./ui_ux/ModalDetails.js";
 import PageController from "./ui_ux/PageController.js";
 import Registration from "./ui_ux/RegistrationForm.js";
+import FilterForm from "./ui_ux/FilterForm.js";
 import Grid from "./ui_ux/grid.js";
+import Search from "./ui_ux/SearchElement.js";
 
 
 //constants and variables
@@ -14,21 +16,51 @@ const columnsOfMovies = ['Poster','Details'];
 const TITLES_FOR_DETAILS = ['Production countries:','Popularity:','Genres:']
 const LOGIN_USER = 'LogInUser';
 let ACTIVE_USER = undefined;
+let FILTER_OBJECT;
+let SEARCH_OBJECT;
 
 
 
 //objects
+
 const mainMenu = new ApplicationMenu('main-menu-section-id',checkLocalStorage(), menuHendler)
-const movieService = new MoviesService();
+const movieService = new MoviesService('2c46288716a18fb7aadcc2a801f3fc6b');
 const tableMovies = new Grid('content-id',columnsOfMovies,callbackFnGriRrow)
 const modalDetails = new ModalDetails('modal-window-id',callbackAddMovieToUser);
 const pageController = new PageController('page-controller-id',callBackPageController);
 const logInForm = new Registration('login-place','modal-window-id',callbackFnReg,callbackFnValid,callbackLogOut,ACTIVE_USER)
 const registrationService = new RegistrationService('http://localhost:3500/users')
+const filterForm = new FilterForm('filter-place','modal-window-id',setOptionsOfSearch,callbackFilter);
+const searchInput = new Search('search-place',callbackSearch);
+
+
 
 //functions
+async function callbackSearch(object){
+    const string = object.string_name.split(' ').join('+');
+    const listSearch = await movieService.getListBySearch(string)
+    SEARCH_OBJECT = string;
+    createTableMovies(listSearch,`List of search`,1)
+
+
+}
+
+async function setOptionsOfSearch(parentId){
+    const genresSelect = document.getElementById(`${parentId}-genres-id`)
+    const regionSelect = document.getElementById(`${parentId}-regions-id`)
+    const languageSelect = document.getElementById(`${parentId}-select-language-id`)
+    const genresName = genresFromAPI.genres.map(element => element.name);
+    const regionsName = regionsFromAPI.results.map(element => element.english_name);
+    const languageName =  languageFromAPI.map(element => element.english_name);
+    filterForm.setOptionsForSearch(genresSelect,genresName.sort(),'Select genres')
+    filterForm.setOptionsForSearch(regionSelect,regionsName.sort(),'Select region')
+    filterForm.setOptionsForSearch(languageSelect,languageName.sort(),'Select language of movie')
+}
+
 async function menuHendler(index){
     pageController.currentIndex = 1;
+    FILTER_OBJECT = undefined;
+    SEARCH_OBJECT = undefined;
     switch (index) {
         case 0:{
             const popularyMoviesList = await movieService.getPopularyMovies(1);
@@ -103,66 +135,52 @@ function getOverviews(object){
 }
 
 async function createTableMovies(object,title,numberPage){
+    if(object.errors == undefined){
     const dataOfMovies = await getDataForTable(object.results);
     const idMovies = getIdMovies(object.results);
     const imagesPath = getImagePath(object.results);
     const overviews = getOverviews(object.results);
     tableMovies.fillTable(imagesPath,dataOfMovies,overviews,idMovies,title)
     pageController.createPageController(object.total_pages,10,numberPage);
+    } else {
+        object.errors.forEach(element => alert(`${element}`))
+    }
 }
 
 async function callBackPageController(numberPage){
+if(FILTER_OBJECT == undefined && SEARCH_OBJECT == undefined) {
     switch (mainMenu.getActivIndex()) {
         case 0:{
             const popularyMoviesList = await movieService.getPopularyMovies(numberPage);
-            if(popularyMoviesList.errors == undefined){
-                createTableMovies(popularyMoviesList,'Popularity movies',numberPage);  
-            } else {
-                popularyMoviesList.errors.forEach(element => alert(`${element}`))
-            }
+            createTableMovies(popularyMoviesList,'Popularity movies',numberPage);  
             break;
         }
             
         case 1:{
             const nowPlayingList = await movieService.getNowPlaying(numberPage);
-            if(nowPlayingList.errors == undefined){
-                createTableMovies(nowPlayingList,`Now playing from ${nowPlayingList.dates.minimum} to ${nowPlayingList.dates.maximum}`,numberPage); 
-               
-            } else {
-                nowPlayingList.errors.forEach(element => alert(`${element}`))
-            }
+            createTableMovies(nowPlayingList,`Now playing from ${nowPlayingList.dates.minimum} to ${nowPlayingList.dates.maximum}`,numberPage); 
             break;
         }
             
         case 2:{
             const upcomingList = await movieService.getUpcoming(numberPage);
-            if(upcomingList.errors == undefined){
-                createTableMovies(upcomingList,`Upcoming from ${upcomingList.dates.minimum} to ${upcomingList.dates.maximum}`,numberPage);   
-            } else {
-                upcomingList.errors.forEach(element => alert(`${element}`))
-            }
+            createTableMovies(upcomingList,`Upcoming from ${upcomingList.dates.minimum} to ${upcomingList.dates.maximum}`,numberPage);   
             break;
         }
         default : {
             const topList = await movieService.getTopMovie(numberPage);
-            if(topList.errors == undefined){
-                createTableMovies(topList,`Top rated movies`,numberPage);   
-            } else {
-                topList.errors.forEach(element => alert(`${element}`))
-            }
-        break;
-        }
-            
-        
+            createTableMovies(topList,`Top rated movies`,numberPage);   
+            break;
+        }     
     }
-}
-
-function checkResponse(response){
-
-if(response.errors != undefined){
-
-}
-
+} else if (FILTER_OBJECT !=undefined){
+    const listFilterMovies = await movieService.getListByDiscovery(FILTER_OBJECT,numberPage);
+    createTableMovies(listFilterMovies,`Result of filter`,numberPage);       
+} else if (SEARCH_OBJECT != undefined){
+    const listSearchMovies = await movieService.getListBySearch(SEARCH_OBJECT,numberPage);
+        createTableMovies(listSearchMovies,`List of search`,numberPage);
+}   
+    
 }
 
 async function callbackFnGriRrow(id){
@@ -253,15 +271,6 @@ function rebildTable(){
     }
 }
 
-movieService.getTopMovie(1).then(object => {
-    createTableMovies(object,'Top rated movies',1)
-})
-
-
-
-
-
-
 function removeMovieId(typeList, idMovie) {
     switch (typeList) {
         case 'watch': {
@@ -289,3 +298,25 @@ function addMovieId(typeList, idMovie) {
     }
 }
 
+async function callbackFilter(object){
+    let objectToSearch = {};
+    objectToSearch.yearToSearch = object.year;
+    objectToSearch.genresToSearch = genresFromAPI.genres.filter(genre => object.genres.includes(genre.name));
+    objectToSearch.regionToSearch = regionsFromAPI.results.filter(region => object.regions.includes(region.english_name))
+    objectToSearch.languageToSearch = languageFromAPI.filter(language => object.language.includes(language.english_name))
+    const listMovies = await movieService.getListByDiscovery(objectToSearch);
+    FILTER_OBJECT = objectToSearch;
+    createTableMovies(listMovies,'Result of filter',1)
+}
+
+
+
+//start action
+
+movieService.getTopMovie(1).then(object => {
+    createTableMovies(object,'Top rated movies',1)
+})
+
+const genresFromAPI =  await movieService.getGenres();
+const regionsFromAPI =  await movieService.getRegions();
+const languageFromAPI =  await movieService.getLanguages();

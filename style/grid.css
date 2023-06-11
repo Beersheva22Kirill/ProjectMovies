@@ -1,0 +1,56 @@
+.poster-image{
+    width: 30vw;
+}
+
+.td-inforation{
+    width: 55vw;
+    padding-left: 10px;
+    text-align: center;
+}
+
+.row-table-content:hover{
+    cursor: pointer;
+}
+
+.table_place{
+    height: 50vh;
+    overflow-y: auto;
+}
+
+.title-table{
+    text-align: center;
+    margin: 0;
+    margin-bottom: 7px;
+}
+
+.overview-table{
+    display: none;
+}
+
+@media(min-width:650px){
+    .poster-image{
+        width: 15vw;
+    }
+
+    .table_place{
+        height: 75vh;
+        overflow-y: auto;
+    }
+
+    .td-inforation {
+        width: 25vw;
+        vertical-align: top;
+    }
+
+    .overview-table{
+        display: flex;
+    }
+}
+
+@media(min-width: 1000px){
+
+    .td-inforation {
+        width: 15vw;
+    }
+
+}

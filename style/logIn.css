@@ -1,0 +1,101 @@
+.modal-window-login{
+    position: absolute;
+    width: 75vw;
+    height: 73vh;
+    top: 8%;
+    left: 8%;
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    cursor: default;
+    padding: 31px 15px;
+  }
+
+  .modal-window-login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    left: 10%;
+    width: 70vw;
+    height: 35vh;
+}
+
+#login-place{
+    display: flex;
+    flex-direction: row;
+}
+
+.login-buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.login-form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-registration{
+    margin: 5px;
+    width: 40vw;
+}
+
+.button-login{
+    width: 40vw;
+}
+
+.close-anchor{
+    text-align: right;
+    margin-right: 10px;
+}
+
+@media(min-width: 650px){
+    .modal-window-login{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        left: 30%;
+        width: 40vw;
+        height: 35vh;
+    }
+
+    .input-section {
+        text-align: left;
+    }
+    .input-registration{
+        margin: 5px;
+        width: 25vw;
+    }
+
+    .button-login{
+        width: 13vw;
+        margin: 15px;
+    }
+
+    .close-anchor{
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+    }
+
+    @media(min-width: 1000px){
+
+        .modal-window-login {
+            width: 30vw;
+            height: 35vh;
+        }
+
+        .input-registration {
+            margin: 5px;
+            width: 20vw;
+        }
+    }
+
+  
+
+}
