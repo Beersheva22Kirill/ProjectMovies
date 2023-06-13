@@ -3,13 +3,13 @@ export default class PageController{
     #totalPage;
     #interval;
     #callBackFn;
-    currentIndex;
+    #currentIndex;
     #parentID;
 
     constructor(parentId, callbackFn){
         this.#parentID = parentId;
         this.#callBackFn = callbackFn;
-        this.currentIndex = 1;
+        this.#currentIndex = 1;
         
     }
 
@@ -43,7 +43,7 @@ export default class PageController{
     #setEventListener(startIndex){
         document.getElementById(`${this.#parentID}-li-first`).hidden = startIndex > 1 ? false : true;
         const previusPage = document.getElementById(`${this.#parentID}-previus-page-id`);
-        previusPage.hidden = this.currentIndex == 1 ? true : false;
+        previusPage.hidden = this.#currentIndex == 1 ? true : false;
         const firstNumber = document.getElementById(`${this.#parentID}-li-first`);
         const list = document.getElementById(`${this.#parentID}-ul-id`).childNodes;
         const listNumbers = Array.from(list).filter(element => (element.id == `${this.#parentID}-li-number`))
@@ -52,29 +52,29 @@ export default class PageController{
         
         listNumbers.forEach(item => {
             item.addEventListener('click', () => {
-                this.currentIndex = Number.parseInt(item.innerText);
-                this.#callBackFn(this.currentIndex)
+                this.#currentIndex = Number.parseInt(item.innerText);
+                this.#callBackFn(this.#currentIndex)
             })
         }) 
 
         firstNumber.addEventListener('click', () => {
-            this.currentIndex = Number.parseInt(firstNumber.innerText);
-            this.#callBackFn(this.currentIndex)
+            this.#currentIndex = Number.parseInt(firstNumber.innerText);
+            this.#callBackFn(this.#currentIndex)
         })
 
         lastNumber.addEventListener('click', () => {
-            this.currentIndex = Number.parseInt(lastNumber.innerText);
-            this.#callBackFn(this.currentIndex)
+            this.#currentIndex = Number.parseInt(lastNumber.innerText);
+            this.#callBackFn(this.#currentIndex)
         })
 
         nextPage.addEventListener('click', () => {
-            this.currentIndex++
-            this.#callBackFn(this.currentIndex)
+            this.#currentIndex++
+            this.#callBackFn(this.#currentIndex)
         })
 
         previusPage.addEventListener('click', () => {
-            this.currentIndex--
-            this.#callBackFn(this.currentIndex)
+            this.#currentIndex--
+            this.#callBackFn(this.#currentIndex)
         })
         
     }

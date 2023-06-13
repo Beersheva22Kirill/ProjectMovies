@@ -6,8 +6,10 @@ export default class SearchForm{
     #callBackSetOption;
     #callbackSearchFn;
     #searchObject;
+    #genresObject;
 
-    constructor (parentId,parentForForm,callBackSetOption,callbackSearchFn){
+    constructor (parentId,parentForForm,callBackSetOption,callbackSearchFn, genres){
+        this.#genresObject = genres;
         this.#searchObject = {};
         this.#callBackSetOption = callBackSetOption;
         this.#callbackSearchFn = callbackSearchFn;
@@ -61,6 +63,7 @@ export default class SearchForm{
             </form>    
             </div>
         </div>` 
+        
         this.#callBackSetOption(`${this.#parentForForm}`);  
         this.#setListener(); 
                

@@ -20,18 +20,18 @@ export default class MoviesService{
         return this.#getResponse(url);
     }
 
-    async getPopularyMovies(page){
+    async getPopularyMovies(page = 1){
         const url = `${this.#mainUrl}movie/popular?language=en-US&page=${page}&api_key=${this.#apiKey}`
        
         return this.#getResponse(url);
     }
 
-    async getNowPlaying(page){
+    async getNowPlaying(page = 1){
         const url = `${this.#mainUrl}movie/now_playing?language=en-US&page=${page}&api_key=${this.#apiKey}`
         return this.#getResponse(url);
     }
 
-    async getUpcoming(page){
+    async getUpcoming(page = 1){
         const url = `${this.#mainUrl}movie/upcoming?language=en-US&page=${page}&api_key=${this.#apiKey}`
         return this.#getResponse(url);
     }
@@ -56,7 +56,7 @@ export default class MoviesService{
         return this.#getResponse(url);
     }
 
-    async getTopMovie(page){
+    async getTopMovie(page = 1){
         const urlTopMovie = `${this.#mainUrl}movie/top_rated?language=en-US&page=${page}&api_key=${this.#apiKey}`
         const movieArray = await this.#getResponse(urlTopMovie);
         if(movieArray.errors == undefined){

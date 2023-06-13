@@ -34,7 +34,7 @@ export default class RegistrationService{
     }
 
     async getUserByName(name){
-            const url_name = `${this.#URL}?username=${name}`; //'http://localhost:3500/users'
+            const url_name = `${this.#URL}?username=${name}`;
             const response = await fetch(url_name);
             const user = await response.json()
 
@@ -42,7 +42,7 @@ export default class RegistrationService{
         
     }
 
-    async checkUser(username,password){
+    async logInUser(username,password){
             const url_valid = `${this.#URL}?username=${username}&password=${password}`
             const response = await fetch(url_valid);
             const user = await response.json()

@@ -18,6 +18,7 @@ export default class Search {
         <section>
             <form id = "${this.#parentId}-form-search-id">
                 <input class = "input-search-movie" type = "text" name = "name-movie" placeholder = "Search...">
+                <button type = "submit">>></button>
             <form>
         </section>`
         this.#setListener()

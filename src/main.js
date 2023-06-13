@@ -30,7 +30,7 @@ const modalDetails = new ModalDetails('modal-window-id',callbackAddMovieToUser);
 const pageController = new PageController('page-controller-id',callBackPageController);
 const logInForm = new Registration('login-place','modal-window-id',callbackFnReg,callbackFnValid,callbackLogOut,ACTIVE_USER)
 const registrationService = new RegistrationService('http://localhost:3500/users')
-const filterForm = new FilterForm('filter-place','modal-window-id',setOptionsOfSearch,callbackFilter);
+const filterForm = new FilterForm('filter-place','modal-window-id',setOptionsOfFilter,callbackFilter);
 const searchInput = new Search('search-place',callbackSearch);
 
 
@@ -45,7 +45,7 @@ async function callbackSearch(object){
 
 }
 
-async function setOptionsOfSearch(parentId){
+async function setOptionsOfFilter(parentId){
     const genresSelect = document.getElementById(`${parentId}-genres-id`)
     const regionSelect = document.getElementById(`${parentId}-regions-id`)
     const languageSelect = document.getElementById(`${parentId}-select-language-id`)
@@ -63,21 +63,21 @@ async function menuHendler(index){
     SEARCH_OBJECT = undefined;
     switch (index) {
         case 0:{
-            const popularyMoviesList = await movieService.getPopularyMovies(1);
-            createTableMovies(popularyMoviesList,'Popularity movies',1);
+            const popularyMoviesList = await movieService.getPopularyMovies();
+            createTableMovies(popularyMoviesList,'Popularity movies');
             pageController.openPageController(); 
             break;  
         }    
             
         case 1: {
-            const nowPlayingList = await movieService.getNowPlaying(1);
-            createTableMovies(nowPlayingList,`Now playing from ${nowPlayingList.dates.minimum} to ${nowPlayingList.dates.maximum}`,1);   
+            const nowPlayingList = await movieService.getNowPlaying();
+            createTableMovies(nowPlayingList,`Now playing from ${nowPlayingList.dates.minimum} to ${nowPlayingList.dates.maximum}`);   
             pageController.openPageController(); 
             break;
         }
         case 2: {
-            const upcomingList = await movieService.getUpcoming(1);
-            createTableMovies(upcomingList,`Upcoming from ${upcomingList.dates.minimum} to ${upcomingList.dates.maximum}`,1);   
+            const upcomingList = await movieService.getUpcoming();
+            createTableMovies(upcomingList,`Upcoming from ${upcomingList.dates.minimum} to ${upcomingList.dates.maximum}`);   
             pageController.openPageController(); 
             break;
         }
@@ -85,7 +85,7 @@ async function menuHendler(index){
         case 3: {
             await movieService.setlistMovie(ACTIVE_USER.watches)
             const watchindList = movieService.getListOfMovies();
-            createTableMovies(watchindList,`Watches list of user ${ACTIVE_USER.username}`,1) 
+            createTableMovies(watchindList,`Watches list of user ${ACTIVE_USER.username}`) 
             pageController.hidePageController();
             break;
         }
@@ -93,7 +93,7 @@ async function menuHendler(index){
         case 4: {
             await movieService.setlistMovie(ACTIVE_USER.favorites)
             const watchindList = movieService.getListOfMovies();
-            createTableMovies(watchindList,`Favorites list of user ${ACTIVE_USER.username}`,1) 
+            createTableMovies(watchindList,`Favorites list of user ${ACTIVE_USER.username}`) 
             pageController.hidePageController();
             break;
         }
@@ -134,7 +134,7 @@ function getOverviews(object){
     return object.map(element => element.overview)
 }
 
-async function createTableMovies(object,title,numberPage){
+async function createTableMovies(object,title,numberPage = 1){
     if(object.errors == undefined){
     const dataOfMovies = await getDataForTable(object.results);
     const idMovies = getIdMovies(object.results);
@@ -212,7 +212,7 @@ async function callbackFnReg(newUser){
 }
 
 async function callbackFnValid(user){
-    const loginUser = await registrationService.checkUser(user.username,user.password);
+    const loginUser = await registrationService.logInUser(user.username,user.password);
         if(loginUser.length == 1){
             localStorage.setItem(LOGIN_USER,JSON.stringify(loginUser[0]));
             checkLocalStorage();
